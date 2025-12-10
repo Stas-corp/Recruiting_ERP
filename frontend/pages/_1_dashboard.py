@@ -1,5 +1,9 @@
 import streamlit as st
 
-def show():
-    st.header("🏠 Dashboard")
-    st.write("Главная страница")
+from utils.helpers import init_page
+
+
+init_page("Main Page", "🏠")
+# def show():
+st.header("🏠 Main Page")
+st.write("Главная страница")
