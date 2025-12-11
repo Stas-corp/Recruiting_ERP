@@ -6,4 +6,4 @@ from utils.helpers import init_page
 init_page("Main Page", "🏠")
 # def show():
 st.header("🏠 Main Page")
-st.write("Главная страница")
+st.write("Головна сторінка")

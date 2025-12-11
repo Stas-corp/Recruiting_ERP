@@ -27,17 +27,17 @@ class APIClient:
             response = self.session.request(method, url, **kwargs)
             
             if response.status_code == 401:
-                st.error("❌ Сессия истекла")
+                st.error("❌ Сесія закінчилася")
                 st.session_state.token = None
                 st.rerun()
             
             if response.status_code >= 400:
-                st.error(f"❌ Ошибка: {response.status_code}")
+                st.error(f"❌ Помилка: {response.status_code}")
                 return None
             
             return response.json() if response.content else {}
         except Exception as e:
-            st.error(f"❌ Ошибка подключения: {str(e)}")
+            st.error(f"❌ Помилка підключення: {str(e)}")
             return None
     
     def login(self, email: str, password: str) -> Optional[Dict]:
