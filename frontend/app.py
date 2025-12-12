@@ -51,7 +51,7 @@ def show_app():
         st.Page("app_pages/_1_dashboard.py", title="Main Page", icon="🏠"),
         st.Page("app_pages/_2_candidates.py", title="Candidates", icon="👥"),
         st.Page("app_pages/_3_responses.py", title="Responses", icon="📋"),
-        st.Page("app_pages/_4_vacancies.py", title="Vacancies", icon="💼"),
+        # st.Page("app_pages/_4_vacancies.py", title="Vacancies", icon="💼"),
         # st.Page("app_pages/_5_analytics.py", title="Analytics", icon="📈"),
         # st.Page("app_pages/_6_users.py", title="Users", icon="🔐"),
         # st.Page("app_pages/_7_audit_logs.py", title="Audit Logs", icon="📝"),
