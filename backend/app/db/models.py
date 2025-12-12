@@ -1,19 +1,23 @@
+from datetime import datetime
+
+from sqlalchemy.orm import relationship
 from sqlalchemy import (
     Column, Integer, String, Text, DateTime, Boolean, 
-    ForeignKey, JSON, Enum, UniqueConstraint, Index
+    ForeignKey, JSON, Enum as SQLEnum, UniqueConstraint, Index
 )
-from sqlalchemy.orm import relationship
-from datetime import datetime
+
 from app.db.base import Base, TimestampMixin
 from app.core.constants import ResponseStatusEnum, ResponseSourceEnum, RoleEnum
+
 
 class Role(Base, TimestampMixin):
     __tablename__ = "roles"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(Enum(RoleEnum), unique=True, nullable=False, index=True)
+    name = Column(SQLEnum(RoleEnum), unique=True, nullable=False, index=True)
     description = Column(String(255))
     permissions = Column(JSON, default=list)
     users = relationship("User", back_populates="role")
+
 
 class User(Base, TimestampMixin):
     __tablename__ = "users"
@@ -28,6 +32,7 @@ class User(Base, TimestampMixin):
     edit_locks = relationship("EditLock", back_populates="locked_by")
     audit_logs = relationship("AuditLog", back_populates="user")
 
+
 class Candidate(Base, TimestampMixin):
     __tablename__ = "candidates"
     id = Column(Integer, primary_key=True, index=True)
@@ -40,6 +45,7 @@ class Candidate(Base, TimestampMixin):
     notes = Column(Text)
     responses = relationship("Response", back_populates="candidate", cascade="all, delete-orphan")
     edit_locks = relationship("EditLock", back_populates="candidate")
+
 
 class Vacancy(Base, TimestampMixin):
     __tablename__ = "vacancies"
@@ -54,13 +60,14 @@ class Vacancy(Base, TimestampMixin):
     is_active = Column(Boolean, default=True, index=True)
     responses = relationship("Response", back_populates="vacancy", cascade="all, delete-orphan")
 
+
 class Response(Base, TimestampMixin):
     __tablename__ = "responses"
     id = Column(Integer, primary_key=True, index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"), nullable=False, index=True)
     vacancy_id = Column(Integer, ForeignKey("vacancies.id"), nullable=False, index=True)
-    source = Column(Enum(ResponseSourceEnum), nullable=False, index=True)
-    status = Column(Enum(ResponseStatusEnum), default=ResponseStatusEnum.NEW, nullable=False, index=True)
+    source = Column(SQLEnum(ResponseSourceEnum), nullable=False, index=True)
+    status = Column(SQLEnum(ResponseStatusEnum), default=ResponseStatusEnum.NEW, nullable=False, index=True)
     response_date = Column(DateTime, default=datetime.utcnow)
     assigned_recruiter_id = Column(Integer, ForeignKey("users.id"))
     external_id = Column(String(255))
@@ -73,17 +80,19 @@ class Response(Base, TimestampMixin):
         UniqueConstraint("candidate_id", "vacancy_id", "source", name="uq_candidate_vacancy_source"),
     )
 
+
 class ResponseStatusHistory(Base, TimestampMixin):
     __tablename__ = "response_status_history"
     id = Column(Integer, primary_key=True, index=True)
     response_id = Column(Integer, ForeignKey("responses.id"), nullable=False, index=True)
-    old_status = Column(Enum(ResponseStatusEnum))
-    new_status = Column(Enum(ResponseStatusEnum), nullable=False)
+    old_status = Column(SQLEnum(ResponseStatusEnum))
+    new_status = Column(SQLEnum(ResponseStatusEnum), nullable=False)
     changed_by_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     changed_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
     comment = Column(Text)
     response = relationship("Response", back_populates="status_history")
     changed_by = relationship("User")
+
 
 class EditLock(Base):
     __tablename__ = "edit_locks"
@@ -100,6 +109,7 @@ class EditLock(Base):
     __table_args__ = (
         UniqueConstraint("entity_type", "candidate_id", "response_id", name="uq_single_lock_per_entity"),
     )
+
 
 class AuditLog(Base):
     __tablename__ = "audit_logs"

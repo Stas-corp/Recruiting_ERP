@@ -2,6 +2,7 @@ from enum import Enum
 
 class ResponseStatusEnum(str, Enum):
     NEW = "new"
+    IN_PROGRESS = "in_progress"
     REJECTED = "rejected"
     AWAITING_DECISION = "awaiting_decision"
     PASSED_TO_MANAGER = "passed_to_manager"
