@@ -7,8 +7,14 @@ from app.core.exceptions import RecordLockedException
 
 class LockService:
     @staticmethod
-    def acquire_lock(db: Session, entity_type: str, entity_id: int, user_id: int,
-                    candidate_id: Optional[int] = None, response_id: Optional[int] = None) -> EditLock:
+    def acquire_lock(
+        db: Session, 
+        entity_type: str, 
+        entity_id: int, 
+        user_id: int,
+        candidate_id: Optional[int] = None, 
+        response_id: Optional[int] = None
+    ) -> EditLock:
         existing_lock = db.query(EditLock).filter(
             EditLock.entity_type == entity_type,
             (EditLock.candidate_id == candidate_id) if entity_type == "candidate" else (EditLock.response_id == response_id)
@@ -37,7 +43,12 @@ class LockService:
         return lock
 
     @staticmethod
-    def release_lock(db: Session, entity_type: str, entity_id: int, user_id: int) -> bool:
+    def release_lock(
+        db: Session, 
+        entity_type: str, 
+        entity_id: int, 
+        user_id: int
+    ) -> bool:
         lock = db.query(EditLock).filter(EditLock.entity_type == entity_type).first()
         if lock and lock.locked_by_id == user_id:
             db.delete(lock)
